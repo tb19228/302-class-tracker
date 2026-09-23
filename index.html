@@ -5,193 +5,145 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>302班潔牙＆座位清理＆漱口檢查表</title>
 <style>
-  *{box-sizing:border-box}
-  body{margin:0;background:#f5f8fb;color:#24313d;font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif}
-  .wrap{max-width:1200px;margin:auto;padding:28px}
-  h1{text-align:center;font-size:clamp(28px,4vw,50px);margin:5px 0 22px}
-  .card{background:white;border-radius:20px;padding:22px;margin:16px 0;box-shadow:0 4px 18px rgba(0,0,0,.08)}
-  .controls{display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:center;font-size:24px}
-  label{font-weight:700}
-  input[type=checkbox]{width:27px;height:27px;vertical-align:-5px}
-  input[type=number]{font-size:22px;width:90px;padding:8px;border:2px solid #bcc8d2;border-radius:10px}
-  button{font-size:20px;padding:10px 18px;border:0;border-radius:12px;cursor:pointer}
-  .primary{background:#dcecf8}.danger{background:#f7e1e1}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center;font-size:20px;font-weight:700}
-  .students{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
-  .student{border:2px solid #dbe3e9;border-radius:16px;padding:12px;text-align:center;background:#fff}
-  .num{font-size:26px;font-weight:800;margin-bottom:8px}
-  .checks{display:flex;justify-content:center;gap:12px;font-size:24px}
-  textarea{width:100%;min-height:120px;border:2px solid #d5dde4;border-radius:14px;padding:14px;font-size:20px;resize:vertical}
-  .hint{text-align:center;color:#64727e;margin:8px 0 0}
-  @media(max-width:650px){.stats{grid-template-columns:1fr}.wrap{padding:14px}}
+*{box-sizing:border-box}
+body{margin:0;background:#f5f8fb;color:#24303c;font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif}
+.wrap{max-width:1200px;margin:auto;padding:28px 24px 60px}
+h1{text-align:center;font-size:clamp(30px,5vw,54px);margin:12px 0 36px}
+.card{background:white;border-radius:28px;padding:30px;margin:0 0 28px;box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.today{display:flex;gap:28px;justify-content:center;align-items:center;flex-wrap:wrap;font-size:clamp(25px,4vw,42px);font-weight:800}
+.controls{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:clamp(22px,3vw,34px);font-weight:700}
+input[type=checkbox]{width:46px;height:46px;accent-color:#1688f8}
+input[type=number]{font-size:30px;width:150px;padding:12px;border:3px solid #bdc8d1;border-radius:18px;text-align:center}
+button{font-size:25px;padding:14px 28px;border:0;border-radius:18px;cursor:pointer}
+.primary{background:#e4f2ff}.danger{background:#fde4e4}
+.stats{display:grid;gap:16px;text-align:center;font-size:clamp(23px,3vw,34px);font-weight:700}
+.students{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.student{border:3px solid #dbe3e9;background:#fff;border-radius:26px;padding:24px 12px;text-align:center}
+.num{font-size:34px;font-weight:800;margin-bottom:18px}
+.checks{display:flex;justify-content:center;gap:24px}
+.check{display:grid;gap:10px;justify-items:center;font-size:38px}
+.hint{text-align:center;color:#647280;margin-top:20px;font-size:18px}
+@media(max-width:850px){.students{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.wrap{padding:18px 14px 45px}.card{padding:22px 14px}.checks{gap:16px}.student{padding:20px 8px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>302班 潔牙＆座位清理＆漱口檢查表</h1>
+<h1>302班 潔牙＆座位清理＆漱口檢查表</h1>
 
-  <div class="card">
-    <div class="controls">
-      <strong>今天要完成：</strong>
-      <label><input id="taskBrush" type="checkbox" checked> 🦷 潔牙</label>
-      <label><input id="taskSeat" type="checkbox" checked> 🧹 座位清理</label>
-      <label><input id="taskRinse" type="checkbox" checked> 💧 漱口</label>
-    </div>
-  </div>
+<div class="card today">
+  <span>今天要完成：</span>
+  <label><input id="showTooth" type="checkbox" checked> 🦷 潔牙</label>
+  <label><input id="showSeat" type="checkbox" checked> 🧹 座位清理</label>
+  <label><input id="showRinse" type="checkbox" checked> 💧 漱口</label>
+</div>
 
-  <div class="card">
-    <div class="controls">
-      <label>班級人數 <input id="count" type="number" min="1" max="60" value="27"></label>
-      <button class="primary" onclick="applyCount()">套用</button>
-      <button class="danger" onclick="clearAll()">全部清空</button>
-    </div>
-  </div>
+<div class="card controls">
+  <label>班級人數 <input id="count" type="number" min="1" max="60" value="27"></label>
+  <button class="primary" id="apply">套用</button>
+  <button class="danger" id="clear">全部清空</button>
+</div>
 
-  <div class="card stats">
-    <div id="sBrush">🦷 0 / 27 完成潔牙</div>
-    <div id="sSeat">🧹 0 / 27 完成座位清理</div>
-    <div id="sRinse">💧 0 / 27 完成漱口</div>
-  </div>
+<div class="card stats">
+  <div>🦷 <span id="toothStat">0 / 27</span> 完成潔牙</div>
+  <div>🧹 <span id="seatStat">0 / 27</span> 完成座位清理</div>
+  <div>💧 <span id="rinseStat">0 / 27</span> 完成漱口</div>
+</div>
 
-  <div id="students" class="students"></div>
-
-
-  <div class="card">
-    <h2>⏰ 午間提醒鬧鐘</h2>
-    <div id="clock" style="text-align:center;font-size:38px;font-weight:800;margin:8px 0 14px">--:--:--</div>
-    <div style="font-size:20px;line-height:1.9">
-      <div>🍚 每週一～五　<strong>12:15 倒廚餘</strong></div>
-      <div>🪣 每週一～五　<strong>12:20 抬餐桶</strong></div>
-      <div>🎒 每週三、五　<strong>12:25 準備放學</strong></div>
-      <div>😴 每週一、二、四　<strong>12:28 準備午休</strong></div>
-    </div>
-    <div class="controls" style="margin-top:12px">
-      <button class="primary" id="soundBtn" onclick="enableAlarm()">🔔 開啟鬧鐘聲音</button>
-      <button onclick="testAlarm()">▶ 測試聲音</button>
-    </div>
-    <div class="hint">為避免瀏覽器阻擋聲音，每次開啟網頁後請先按一次「開啟鬧鐘聲音」，並保持此頁開啟。</div>
-  </div>
-
-  <div class="card">
-    <h2>📝 老師留言板</h2>
-    <textarea id="note" placeholder="輸入今天的提醒或留言……"></textarea>
-    <div class="hint">勾選紀錄與留言會自動保存在這台裝置上。</div>
-  </div>
+<div id="students" class="students"></div>
+<p class="hint">同一天重新整理或關閉網頁，紀錄會保留；隔天第一次開啟時會自動清空勾選。</p>
 </div>
 
 <script>
-function todayKey(){
+const STORE="class302_tracker_v2";
+const DATEKEY="class302_tracker_date";
+const todayKey=()=>{
   const d=new Date();
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,"0");
-  const day=String(d.getDate()).padStart(2,"0");
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
   return `${y}-${m}-${day}`;
+};
+
+let state={count:27, tooth:[], seat:[], rinse:[]};
+
+function load(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORE)||"null");
+    if(saved && Number(saved.count)) state=saved;
+  }catch(e){}
+  const lastDate=localStorage.getItem(DATEKEY);
+  const now=todayKey();
+
+  // 新的一天：只清除學生三項完成紀錄，保留班級人數。
+  if(lastDate!==now){
+    state.tooth=[]; state.seat=[]; state.rinse=[];
+    localStorage.setItem(DATEKEY,now);
+    save();
+  }
 }
 
-// 每天第一次開啟網頁時，自動清除「前一天」的勾選紀錄。
-// 班級人數、今日任務設定與老師留言板保留。
-const currentDay=todayKey();
-const savedDay=localStorage.getItem("bt_date");
-if(savedDay!==currentDay){
-  localStorage.setItem("bt_checks","{}");
-  localStorage.setItem("bt_date",currentDay);
+function save(){
+  localStorage.setItem(STORE,JSON.stringify(state));
+  localStorage.setItem(DATEKEY,todayKey());
 }
-
-let n = Number(localStorage.getItem("bt_count") || 27);
-const saved = JSON.parse(localStorage.getItem("bt_checks") || "{}");
-document.getElementById("count").value=n;
-document.getElementById("note").value=localStorage.getItem("bt_note") || "";
 
 function render(){
+  document.getElementById("count").value=state.count;
   const box=document.getElementById("students");
   box.innerHTML="";
-  for(let i=1;i<=n;i++){
-    const d=document.createElement("div"); d.className="student";
-    d.innerHTML=`<div class="num">${i}號</div><div class="checks">
-      <label title="潔牙">🦷<input type="checkbox" data-i="${i}" data-k="b"></label>
-      <label title="座位清理">🧹<input type="checkbox" data-i="${i}" data-k="s"></label>
-      <label title="漱口">💧<input type="checkbox" data-i="${i}" data-k="r"></label>
-    </div>`;
-    box.appendChild(d);
+  for(let i=1;i<=state.count;i++){
+    const el=document.createElement("div");
+    el.className="student";
+    el.innerHTML=`
+      <div class="num">${i}號</div>
+      <div class="checks">
+        ${oneCheck("tooth",i,"🦷",state.tooth.includes(i))}
+        ${oneCheck("seat",i,"🧹",state.seat.includes(i))}
+        ${oneCheck("rinse",i,"💧",state.rinse.includes(i))}
+      </div>`;
+    box.appendChild(el);
   }
-  document.querySelectorAll(".student input").forEach(x=>{
-    x.checked=!!saved[`${x.dataset.i}${x.dataset.k}`];
-    x.addEventListener("change",saveChecks);
-  });
+  bindChecks();
   updateStats();
 }
-function saveChecks(){
-  document.querySelectorAll(".student input").forEach(x=>saved[`${x.dataset.i}${x.dataset.k}`]=x.checked);
-  localStorage.setItem("bt_checks",JSON.stringify(saved)); updateStats();
-}
-function updateStats(){
-  const c=k=>[...document.querySelectorAll(`input[data-k="${k}"]`)].filter(x=>x.checked).length;
-  sBrush.textContent=`🦷 ${c("b")} / ${n} 完成潔牙`;
-  sSeat.textContent=`🧹 ${c("s")} / ${n} 完成座位清理`;
-  sRinse.textContent=`💧 ${c("r")} / ${n} 完成漱口`;
-}
-function applyCount(){
-  n=Math.max(1,Math.min(60,Number(count.value)||27));
-  count.value=n; localStorage.setItem("bt_count",n); render();
-}
-function clearAll(){
-  if(!confirm("確定要清空今天的勾選紀錄嗎？")) return;
-  Object.keys(saved).forEach(k=>delete saved[k]);
-  localStorage.setItem("bt_checks","{}"); localStorage.setItem("bt_date",todayKey()); render();
-}
-document.getElementById("note").addEventListener("input",e=>localStorage.setItem("bt_note",e.target.value));
-["taskBrush","taskSeat","taskRinse"].forEach(id=>{
-  const el=document.getElementById(id), key="bt_"+id;
-  if(localStorage.getItem(key)!==null) el.checked=localStorage.getItem(key)==="true";
-  el.addEventListener("change",()=>localStorage.setItem(key,el.checked));
-});
-render();
 
-let alarmEnabled=false, lastAlarmKey="";
-const alarms=[
-  {days:[1,2,3,4,5], time:"12:15", msg:"倒廚餘"},
-  {days:[1,2,3,4,5], time:"12:20", msg:"抬餐桶"},
-  {days:[3,5], time:"12:25", msg:"準備放學"},
-  {days:[1,2,4], time:"12:28", msg:"準備午休"}
-];
-function enableAlarm(){
-  alarmEnabled=true;
-  document.getElementById("soundBtn").textContent="🔔 鬧鐘聲音已開啟";
-  testBeep(false);
+function oneCheck(type,n,icon,checked){
+  return `<label class="check"><span>${icon}</span><input type="checkbox" data-type="${type}" data-n="${n}" ${checked?"checked":""}></label>`;
 }
-function testBeep(show=true){
-  const AC=window.AudioContext||window.webkitAudioContext;
-  if(!AC) return;
-  const ctx=new AC();
-  const osc=ctx.createOscillator(), gain=ctx.createGain();
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.frequency.value=880; gain.gain.value=.15;
-  osc.start(); setTimeout(()=>{osc.stop();ctx.close()},450);
-  if(show) alert("🔔 鬧鐘測試");
-}
-function testAlarm(){ testBeep(true); }
-function ring(msg){
-  for(let i=0;i<3;i++) setTimeout(()=>testBeep(false),i*650);
-  setTimeout(()=>alert("⏰ 302班提醒："+msg),250);
-}
-function tick(){
-  const d=new Date();
-  const hh=String(d.getHours()).padStart(2,"0");
-  const mm=String(d.getMinutes()).padStart(2,"0");
-  const ss=String(d.getSeconds()).padStart(2,"0");
-  const clock=document.getElementById("clock");
-  if(clock) clock.textContent=`${hh}:${mm}:${ss}`;
-  if(!alarmEnabled) return;
-  const now=`${hh}:${mm}`, day=d.getDay();
-  alarms.forEach(a=>{
-    const key=`${d.toDateString()}-${a.time}-${a.msg}`;
-    if(a.days.includes(day)&&a.time===now&&lastAlarmKey!==key){
-      lastAlarmKey=key; ring(a.msg);
-    }
+
+function bindChecks(){
+  document.querySelectorAll(".student input[type=checkbox]").forEach(cb=>{
+    cb.addEventListener("change",()=>{
+      const type=cb.dataset.type, n=Number(cb.dataset.n);
+      const set=new Set(state[type]);
+      cb.checked ? set.add(n) : set.delete(n);
+      state[type]=[...set].sort((a,b)=>a-b);
+      save(); updateStats();
+    });
   });
 }
-setInterval(tick,1000); tick();
 
+function updateStats(){
+  document.getElementById("toothStat").textContent=`${state.tooth.length} / ${state.count}`;
+  document.getElementById("seatStat").textContent=`${state.seat.length} / ${state.count}`;
+  document.getElementById("rinseStat").textContent=`${state.rinse.length} / ${state.count}`;
+}
+
+document.getElementById("apply").addEventListener("click",()=>{
+  const n=Math.max(1,Math.min(60,Number(document.getElementById("count").value)||27));
+  state.count=n;
+  for(const k of ["tooth","seat","rinse"]) state[k]=state[k].filter(x=>x<=n);
+  save(); render();
+});
+
+document.getElementById("clear").addEventListener("click",()=>{
+  if(confirm("確定要清空今天所有勾選紀錄嗎？")){
+    state.tooth=[]; state.seat=[]; state.rinse=[];
+    save(); render();
+  }
+});
+
+load();
+render();
 </script>
 </body>
 </html>

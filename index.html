@@ -50,6 +50,15 @@ button{font-size:25px;padding:14px 28px;border:0;border-radius:18px;cursor:point
   <div>💧 <span id="rinseStat">0 / 27</span> 完成漱口</div>
 </div>
 
+
+<div class="card" style="text-align:center">
+  <div style="font-size:clamp(23px,3vw,34px);font-weight:800;margin-bottom:18px">⏰ 午間提醒鬧鐘</div>
+  <div id="clock" style="font-size:32px;font-weight:800;margin-bottom:16px">--:--:--</div>
+  <button class="primary" id="soundBtn" type="button">🔔 開啟鬧鐘聲音</button>
+  <button class="primary" id="testBtn" type="button">測試鬧鐘</button>
+  <p class="hint">提醒時間：12:15、12:20、週三／週五 12:25、週一／週二／週四 12:28。請保持此網頁開啟，手機勿靜音。</p>
+</div>
+
 <div id="students" class="students"></div>
 <p class="hint">同一天重新整理或關閉網頁，紀錄會保留；隔天第一次開啟時會自動清空勾選。</p>
 </div>
@@ -141,6 +150,58 @@ document.getElementById("clear").addEventListener("click",()=>{
     save(); render();
   }
 });
+
+
+// 午間鬧鐘提醒
+let alarmEnabled=false, lastAlarmKey="";
+const alarms=[
+  {days:[1,2,3,4,5], time:"12:15", msg:"潔牙時間到了"},
+  {days:[1,2,3,4,5], time:"12:20", msg:"請檢查潔牙與座位清理"},
+  {days:[3,5], time:"12:25", msg:"準備放學，請完成漱口與座位整理"},
+  {days:[1,2,4], time:"12:28", msg:"漱口與座位整理提醒"}
+];
+
+function beep(showAlert=false){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC) return;
+  const ctx=new AC(), osc=ctx.createOscillator(), gain=ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.frequency.value=880; gain.gain.value=.16;
+  osc.start();
+  setTimeout(()=>{osc.stop();ctx.close();},500);
+  if(showAlert) alert("🔔 鬧鐘測試成功");
+}
+function enableAlarm(){
+  alarmEnabled=true;
+  document.getElementById("soundBtn").textContent="🔔 鬧鐘聲音已開啟";
+  beep(false);
+}
+function ring(msg){
+  beep(false);
+  setTimeout(()=>beep(false),650);
+  setTimeout(()=>beep(false),1300);
+  setTimeout(()=>alert("⏰ 302班提醒："+msg),1500);
+}
+function tick(){
+  const d=new Date();
+  const hh=String(d.getHours()).padStart(2,"0");
+  const mm=String(d.getMinutes()).padStart(2,"0");
+  const ss=String(d.getSeconds()).padStart(2,"0");
+  const clock=document.getElementById("clock");
+  if(clock) clock.textContent=`${hh}:${mm}:${ss}`;
+  if(!alarmEnabled) return;
+  const now=`${hh}:${mm}`, day=d.getDay();
+  alarms.forEach(a=>{
+    const key=`${d.toDateString()}-${a.time}`;
+    if(a.days.includes(day) && a.time===now && lastAlarmKey!==key){
+      lastAlarmKey=key; ring(a.msg);
+    }
+  });
+}
+document.getElementById("soundBtn").addEventListener("click",enableAlarm);
+document.getElementById("testBtn").addEventListener("click",()=>{alarmEnabled=true;document.getElementById("soundBtn").textContent="🔔 鬧鐘聲音已開啟";beep(true);});
+setInterval(tick,1000);
+tick();
 
 load();
 render();

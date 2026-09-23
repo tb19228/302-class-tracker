@@ -80,6 +80,23 @@
 </div>
 
 <script>
+function todayKey(){
+  const d=new Date();
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+// 每天第一次開啟網頁時，自動清除「前一天」的勾選紀錄。
+// 班級人數、今日任務設定與老師留言板保留。
+const currentDay=todayKey();
+const savedDay=localStorage.getItem("bt_date");
+if(savedDay!==currentDay){
+  localStorage.setItem("bt_checks","{}");
+  localStorage.setItem("bt_date",currentDay);
+}
+
 let n = Number(localStorage.getItem("bt_count") || 27);
 const saved = JSON.parse(localStorage.getItem("bt_checks") || "{}");
 document.getElementById("count").value=n;
@@ -120,7 +137,7 @@ function applyCount(){
 function clearAll(){
   if(!confirm("確定要清空今天的勾選紀錄嗎？")) return;
   Object.keys(saved).forEach(k=>delete saved[k]);
-  localStorage.setItem("bt_checks","{}"); render();
+  localStorage.setItem("bt_checks","{}"); localStorage.setItem("bt_date",todayKey()); render();
 }
 document.getElementById("note").addEventListener("input",e=>localStorage.setItem("bt_note",e.target.value));
 ["taskBrush","taskSeat","taskRinse"].forEach(id=>{

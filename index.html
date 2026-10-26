@@ -65,7 +65,7 @@ button{font-size:25px;padding:14px 28px;border:0;border-radius:18px;cursor:point
   <button class="primary" id="soundBtn" type="button">🔔 開啟鬧鐘聲音</button>
   <button class="primary" id="testBtn" type="button">測試鬧鐘</button>
   <div id="nextAlarm" class="hint" aria-live="polite"></div>
-  <p class="hint">提醒時間：12:15、12:20、週三／週五 12:25、週一／週二／週四 12:28。請保持此網頁開啟，手機勿靜音。</p>
+  <p class="hint">提醒時間：12:15、12:20、週三／週五 12:25、週一／週二／週四 12:28（準備午休）。請保持此網頁開啟，手機勿靜音。</p>
 </div>
 
 <div id="students" class="students"></div>
@@ -176,7 +176,7 @@ const alarms=[
   {days:[1,2,3,4,5],time:"12:15",msg:"🗑️ 倒廚餘\n🪥 刷牙\n🧹 打掃"},
   {days:[1,2,3,4,5],time:"12:20",msg:"🍱 抬餐桶"},
   {days:[3,5],time:"12:25",msg:"🎒 準備放學"},
-  {days:[1,2,4],time:"12:28",msg:"🎒 準備放學"}
+  {days:[1,2,4],time:"12:28",msg:"🛏️ 準備午休"}
 ];
 const alarmOverlay=document.getElementById("alarmOverlay");
 const soundBtn=document.getElementById("soundBtn");
